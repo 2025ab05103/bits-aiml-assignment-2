@@ -111,16 +111,6 @@ if uploaded_file:
         report_df = pd.DataFrame(report_dict).transpose().round(4)
         st.dataframe(report_df, use_container_width=True)
 
-        # Optional raw text (examiner-friendly)
-        st.subheader("Classification Report (Text View)")
-        st.text(
-            classification_report(
-                y,
-                y_pred,
-                target_names=["Low Absenteeism", "High Absenteeism"]
-            )
-        )
-
         # ---------------------- CONFUSION MATRIX ----------------------
         st.subheader("Confusion Matrix")
 
