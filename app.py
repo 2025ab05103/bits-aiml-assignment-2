@@ -39,26 +39,33 @@ st.markdown(
     """
 )
 
-# ---------------------- FILE UPLOAD ----------------------
-uploaded_file = st.file_uploader(
-    "Upload Absenteeism CSV file",
-    type="csv"
-)
+# ---------------- INPUT SECTION (COMPACT) ----------------
+input_col1, input_col2 = st.columns([2, 1])
 
-# ---------------------- MODEL SELECTION ----------------------
-model_map = {
-    "Logistic Regression": logistic_regression,
-    "Decision Tree": decision_tree,
-    "KNN": knn,
-    "Naive Bayes": naive_bayes,
-    "Random Forest": random_forest,
-    "XGBoost": xgboost_model
-}
+with input_col1:
+    uploaded_file = st.file_uploader(
+        "Upload Absenteeism CSV",
+        type="csv",
+        label_visibility="collapsed"
+    )
 
-selected_model_name = st.selectbox(
-    "Select Classification Model",
-    list(model_map.keys())
-)
+with input_col2:
+    model_map = {
+        "Logistic Regression": logistic_regression,
+        "Decision Tree": decision_tree,
+        "KNN": knn,
+        "Naive Bayes": naive_bayes,
+        "Random Forest": random_forest,
+        "XGBoost": xgboost_model
+    }
+
+    selected_model_name = st.selectbox(
+        "Select Model",
+        list(model_map.keys()),
+        label_visibility="collapsed"
+    )
+
+st.divider()
 
 # ---------------------- MAIN LOGIC ----------------------
 if uploaded_file:
