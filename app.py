@@ -27,7 +27,7 @@ model_name = st.selectbox(
 )
 
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+    df = pd.read_csv(uploaded_file, sep=";")
 
     df["Absenteeism_Class"] = (df["Absenteeism time in hours"] >= 8).astype(int)
     df.drop("Absenteeism time in hours", axis=1, inplace=True)
