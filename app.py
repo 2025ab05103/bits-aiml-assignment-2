@@ -1,13 +1,20 @@
 import streamlit as st
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score,
-    f1_score, roc_auc_score, matthews_corrcoef,
-    confusion_matrix
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
+    matthews_corrcoef,
+    confusion_matrix,
+    classification_report
 )
 
+# Import preprocessing and model modules
 from model.preprocessing import load_and_preprocess
 from model import (
     logistic_regression,
@@ -18,14 +25,27 @@ from model import (
     xgboost_model
 )
 
-st.set_page_config(page_title="Absenteeism Classification", layout="wide")
-st.title("Absenteeism at Work – Classification Models")
+# ---------------------- PAGE CONFIG ----------------------
+st.set_page_config(
+    page_title="Absenteeism at Work - Classification",
+    layout="wide"
+)
 
+st.title("Absenteeism at Work – Classification Models")
+st.markdown(
+    """
+    This application demonstrates multiple classification models on the
+    **UCI Absenteeism at Work** dataset.
+    """
+)
+
+# ---------------------- FILE UPLOAD ----------------------
 uploaded_file = st.file_uploader(
-    "Upload Absenteeism CSV (UCI dataset)",
+    "Upload Absenteeism CSV file (semicolon `;` separated)",
     type="csv"
 )
 
+# ---------------------- MODEL SELECTION ----------------------
 model_map = {
     "Logistic Regression": logistic_regression,
     "Decision Tree": decision_tree,
@@ -35,29 +55,94 @@ model_map = {
     "XGBoost": xgboost_model
 }
 
-selected_model = st.selectbox("Select Model", list(model_map.keys()))
+selected_model_name = st.selectbox(
+    "Select Classification Model",
+    list(model_map.keys())
+)
 
+# ---------------------- MAIN LOGIC ----------------------
 if uploaded_file:
-    X, X_scaled, y = load_and_preprocess(uploaded_file)
 
-    model_module = model_map[selected_model]
-    model = model_module.train_model(X, X_scaled, y)
+    try:
+        # Load and preprocess data
+        X, X_scaled, y = load_and_preprocess(uploaded_file)
 
-    y_pred = model.predict(X_scaled)
-    y_prob = model.predict_proba(X_scaled)[:, 1]
+        # Train selected model
+        model_module = model_map[selected_model_name]
+        model = model_module.train_model(X, X_scaled, y)
 
-    st.subheader("Evaluation Metrics")
-    st.json({
-        "Accuracy": accuracy_score(y, y_pred),
-        "AUC": roc_auc_score(y, y_prob),
-        "Precision": precision_score(y, y_pred),
-        "Recall": recall_score(y, y_pred),
-        "F1 Score": f1_score(y, y_pred),
-        "MCC": matthews_corrcoef(y, y_pred)
-    })
+        # Predictions
+        y_pred = model.predict(X_scaled)
+        y_prob = model.predict_proba(X_scaled)[:, 1]
 
-    st.subheader("Confusion Matrix")
-    cm = confusion_matrix(y, y_pred)
-    fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
-    st.pyplot(fig)
+        # ---------------------- METRICS ----------------------
+        st.subheader("Evaluation Metrics")
+
+        metrics = {
+            "Accuracy": accuracy_score(y, y_pred),
+            "AUC": roc_auc_score(y, y_prob),
+            "Precision": precision_score(y, y_pred),
+            "Recall": recall_score(y, y_pred),
+            "F1 Score": f1_score(y, y_pred),
+            "MCC": matthews_corrcoef(y, y_pred)
+        }
+
+        col1, col2, col3 = st.columns(3)
+        metric_items = list(metrics.items())
+
+        for i, (name, value) in enumerate(metric_items):
+            if i % 3 == 0:
+                col1.metric(name, round(value, 4))
+            elif i % 3 == 1:
+                col2.metric(name, round(value, 4))
+            else:
+                col3.metric(name, round(value, 4))
+
+        # ---------------------- CLASSIFICATION REPORT ----------------------
+        st.subheader("Detailed Classification Report")
+
+        report_dict = classification_report(
+            y,
+            y_pred,
+            target_names=["Low Absenteeism", "High Absenteeism"],
+            output_dict=True
+        )
+
+        report_df = pd.DataFrame(report_dict).transpose().round(4)
+        st.dataframe(report_df, use_container_width=True)
+
+        # Optional raw text (examiner-friendly)
+        st.subheader("Classification Report (Text View)")
+        st.text(
+            classification_report(
+                y,
+                y_pred,
+                target_names=["Low Absenteeism", "High Absenteeism"]
+            )
+        )
+
+        # ---------------------- CONFUSION MATRIX ----------------------
+        st.subheader("Confusion Matrix")
+
+        cm = confusion_matrix(y, y_pred)
+
+        fig, ax = plt.subplots()
+        sns.heatmap(
+            cm,
+            annot=True,
+            fmt="d",
+            cmap="Blues",
+            xticklabels=["Low", "High"],
+            yticklabels=["Low", "High"],
+            ax=ax
+        )
+
+        ax.set_xlabel("Predicted Label")
+        ax.set_ylabel("True Label")
+        ax.set_title("Confusion Matrix")
+
+        st.pyplot(fig)
+
+    except Exception as e:
+        st.error("An error occurred while processing the file.")
+        st.exception(e)
