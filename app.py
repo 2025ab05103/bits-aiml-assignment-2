@@ -104,7 +104,10 @@ if uploaded_file:
         report_dict = classification_report(
             y,
             y_pred,
-            target_names=["Low Absenteeism", "High Absenteeism"],
+            target_names=[
+                "Absenteeism < 8 Hours",
+                "Absenteeism ≥ 8 Hours"
+            ],
             output_dict=True
         )
 
@@ -122,13 +125,13 @@ if uploaded_file:
             annot=True,
             fmt="d",
             cmap="Greens",
-            xticklabels=["Low", "High"],
-            yticklabels=["Low", "High"],
+            xticklabels=["< 8 Hours", "≥ 8 Hours"],
+            yticklabels=["< 8 Hours", "≥ 8 Hours"],
             ax=ax
         )
 
-        ax.set_xlabel("Predicted Label")
-        ax.set_ylabel("True Label")
+        ax.set_xlabel("Predicted Absenteeism Category")
+        ax.set_ylabel("Actual Absenteeism Category")
         ax.set_title("Confusion Matrix")
 
         st.pyplot(fig)
