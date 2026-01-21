@@ -40,13 +40,12 @@ st.markdown(
 )
 
 # ---------------- INPUT SECTION (COMPACT) ----------------
-input_col1, input_col2 = st.columns([2, 1])
+input_col1, input_col2 = st.columns([1, 1])
 
 with input_col1:
     uploaded_file = st.file_uploader(
         "Upload Absenteeism CSV",
-        type="csv",
-        label_visibility="collapsed"
+        type="csv"
     )
 
 with input_col2:
@@ -61,8 +60,7 @@ with input_col2:
 
     selected_model_name = st.selectbox(
         "Select Model",
-        list(model_map.keys()),
-        label_visibility="collapsed"
+        list(model_map.keys())
     )
 
 st.divider()
