@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 
 def load_and_preprocess(csv_file):
-    df = pd.read_csv(csv_file, sep=";")
+    df = pd.read_csv(csv_file)
 
     # Normalize column names
     df.columns = (

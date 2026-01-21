@@ -41,7 +41,7 @@ st.markdown(
 
 # ---------------------- FILE UPLOAD ----------------------
 uploaded_file = st.file_uploader(
-    "Upload Absenteeism CSV file (semicolon `;` separated)",
+    "Upload Absenteeism CSV file",
     type="csv"
 )
 
@@ -80,11 +80,11 @@ if uploaded_file:
 
         metrics = {
             "Accuracy": accuracy_score(y, y_pred),
-            "AUC": roc_auc_score(y, y_prob),
+            "AUC Score": roc_auc_score(y, y_prob),
             "Precision": precision_score(y, y_pred),
             "Recall": recall_score(y, y_pred),
             "F1 Score": f1_score(y, y_pred),
-            "MCC": matthews_corrcoef(y, y_pred)
+            "MCC Score": matthews_corrcoef(y, y_pred)
         }
 
         col1, col2, col3 = st.columns(3)
@@ -121,7 +121,7 @@ if uploaded_file:
             cm,
             annot=True,
             fmt="d",
-            cmap="Blues",
+            cmap="Greens",
             xticklabels=["Low", "High"],
             yticklabels=["Low", "High"],
             ax=ax
