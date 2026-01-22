@@ -80,66 +80,72 @@ if uploaded_file:
         y_pred = model.predict(X_scaled)
         y_prob = model.predict_proba(X_scaled)[:, 1]
 
-        # ---------------------- METRICS ----------------------
-        st.subheader("Evaluation Metrics")
+        # ---------------- OUTPUT SECTION (50% / 50%) ----------------
+        left_col, right_col = st.columns(2)
 
-        metrics = {
-            "Accuracy": accuracy_score(y, y_pred),
-            "AUC Score": roc_auc_score(y, y_prob),
-            "Precision": precision_score(y, y_pred),
-            "Recall": recall_score(y, y_pred),
-            "F1 Score": f1_score(y, y_pred),
-            "MCC Score": matthews_corrcoef(y, y_pred)
-        }
+        # -------- LEFT COLUMN --------
+        with left_col:
+            st.markdown("### Evaluation Metrics")
 
-        col1, col2, col3 = st.columns(3)
-        metric_items = list(metrics.items())
+            metrics = {
+                "Accuracy": accuracy_score(y, y_pred),
+                "AUC": roc_auc_score(y, y_prob),
+                "Precision": precision_score(y, y_pred),
+                "Recall": recall_score(y, y_pred),
+                "F1 Score": f1_score(y, y_pred),
+                "MCC": matthews_corrcoef(y, y_pred)
+            }
 
-        for i, (name, value) in enumerate(metric_items):
-            if i % 3 == 0:
-                col1.metric(name, round(value, 4))
-            elif i % 3 == 1:
-                col2.metric(name, round(value, 4))
-            else:
-                col3.metric(name, round(value, 4))
+            m1, m2, m3 = st.columns(3)
+            metric_items = list(metrics.items())
 
-        # ---------------------- CLASSIFICATION REPORT ----------------------
-        st.subheader("Detailed Classification Report")
+            for i, (name, value) in enumerate(metric_items):
+                if i % 3 == 0:
+                    m1.metric(name, round(value, 4))
+                elif i % 3 == 1:
+                    m2.metric(name, round(value, 4))
+                else:
+                    m3.metric(name, round(value, 4))
 
-        report_dict = classification_report(
-            y,
-            y_pred,
-            target_names=[
-                "Absenteeism < 8 Hours",
-                "Absenteeism ≥ 8 Hours"
-            ],
-            output_dict=True
-        )
+            st.markdown("### Classification Report")
 
-        report_df = pd.DataFrame(report_dict).transpose().round(4)
-        st.dataframe(report_df, use_container_width=True)
+            report_dict = classification_report(
+                y,
+                y_pred,
+                target_names=[
+                    "Absenteeism < 8 Hours",
+                    "Absenteeism ≥ 8 Hours"
+                ],
+                output_dict=True
+            )
 
-        # ---------------------- CONFUSION MATRIX ----------------------
-        st.subheader("Confusion Matrix")
+            report_df = pd.DataFrame(report_dict).transpose().round(4)
+            st.dataframe(report_df, use_container_width=True)
 
-        cm = confusion_matrix(y, y_pred)
+        # -------- RIGHT COLUMN --------
+        with right_col:
+            st.markdown("### Confusion Matrix")
 
-        fig, ax = plt.subplots()
-        sns.heatmap(
-            cm,
-            annot=True,
-            fmt="d",
-            cmap="Greens",
-            xticklabels=["< 8 Hours", "≥ 8 Hours"],
-            yticklabels=["< 8 Hours", "≥ 8 Hours"],
-            ax=ax
-        )
+            cm = confusion_matrix(y, y_pred)
 
-        ax.set_xlabel("Predicted Absenteeism Category")
-        ax.set_ylabel("Actual Absenteeism Category")
-        ax.set_title("Confusion Matrix")
+            fig, ax = plt.subplots(figsize=(5, 4))
+            sns.heatmap(
+                cm,
+                annot=True,
+                fmt="d",
+                cmap="Greens",
+                xticklabels=["< 8 Hours", "≥ 8 Hours"],
+                yticklabels=["< 8 Hours", "≥ 8 Hours"],
+                ax=ax
+            )
 
-        st.pyplot(fig)
+            ax.set_xlabel("Predicted")
+            ax.set_ylabel("Actual")
+            st.pyplot(fig)
+
+    except Exception as e:
+        st.error("An error occurred while processing the dataset.")
+        st.exception(e)
 
     except Exception as e:
         st.error("An error occurred while processing the file.")
