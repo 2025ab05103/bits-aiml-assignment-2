@@ -75,12 +75,12 @@ Each model was evaluated using the following metrics:
 
 | ML Model Name | Observation about model performance |
 |--------------|-------------------------------------|
-| Logistic Regression | Performs well on scaled numerical features and provides stable baseline performance, but may struggle with complex nonlinear patterns. |
-| Decision Tree | Captures nonlinear relationships effectively but shows signs of overfitting when compared to ensemble models. |
-| kNN | Performance is sensitive to feature scaling and neighborhood size; works reasonably well but is computationally expensive for larger datasets. |
-| Naive Bayes | Fast and simple model that performs adequately despite the strong independence assumption between features. |
-| Random Forest (Ensemble) | Provides strong generalization performance by reducing variance through ensemble averaging, outperforming single tree models. |
-| XGBoost (Ensemble) | Achieves the best overall performance due to gradient boosting, effectively capturing complex feature interactions and reducing bias. |
+| Logistic Regression | Demonstrates strong baseline performance with good AUC and MCC, indicating effective discrimination on scaled numerical features. |
+| Decision Tree | Shows poor predictive performance with low AUC and negative MCC, indicating limited generalization on this dataset. |
+| kNN | Achieves the best overall performance across all evaluation metrics, benefiting significantly from feature scaling and local neighborhood learning. |
+| Naive Bayes | Exhibits very high recall but low precision, suggesting a strong bias toward predicting the positive class due to feature independence assumptions. |
+| Random Forest (Ensemble) | Underperforms in this implementation, with negative MCC indicating poor generalization despite ensemble averaging. |
+| XGBoost (Ensemble) | Performs poorly on this dataset, likely due to insufficient tuning or dataset characteristics not favoring gradient boosting. |
 
 ---
 
