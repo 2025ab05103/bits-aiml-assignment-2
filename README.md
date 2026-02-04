@@ -10,16 +10,16 @@ The application allows users to upload a dataset, select a classification model,
 
 ---
 
-## b. Dataset Description  **[1 mark]**
+## b. Dataset Description
 
 The dataset used for this assignment is the **Absenteeism at Work** dataset from the **UCI Machine Learning Repository**.
 
 - **Source:** UCI Machine Learning Repository  
   https://archive.ics.uci.edu/dataset/445/absenteeism+at+work  
 - **Number of instances:** 740  
-- **Number of features:** 20  
+- **Number of features:** 19  
 - **Original target variable:** *Absenteeism time in hours*  
-- **Data format:** CSV (semicolon `;` separated)
+- **Data format:** CSV
 
 ### Target Variable Engineering  
 
@@ -60,12 +60,12 @@ Each model was evaluated using the following metrics:
 
 | ML Model Name | Accuracy | AUC | Precision | Recall | F1 | MCC |
 |--------------|----------|-----|-----------|--------|----|-----|
-| Logistic Regression |  |  |  |  |  |  |
-| Decision Tree |  |  |  |  |  |  |
-| kNN |  |  |  |  |  |  |
-| Naive Bayes |  |  |  |  |  |  |
-| Random Forest (Ensemble) |  |  |  |  |  |  |
-| XGBoost (Ensemble) |  |  |  |  |  |  |
+| Logistic Regression | 0.8 | 0.8582 | 0.745 | 0.69 | 0.7165 | 0.5633 |
+| Decision Tree | 0.4378 | 0.3758 | 0.1749 | 0.1439 | 0.1579 | -0.2608 |
+| kNN | 0.8378 | 0.9122 | 0.8186 | 0.7159 | 0.7638 | 0.6445 |
+| Naive Bayes | 0.4203 | 0.7891 | 0.3871 | 1.0 | 0.5582 | 0.1817 |
+| Random Forest (Ensemble) | 0.4068 | 0.3579 | 0.1613 | 0.1476 | 0.1541 | -0.302 |
+| XGBoost (Ensemble) | 0.5041 | 0.4029 | 0.0714 | 0.0295 | 0.0418 | -0.2584 |
 
 *(Metric values are computed dynamically in the Streamlit application.)*
 
