@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from pathlib import Path
 
 from sklearn.metrics import (
     accuracy_score,
@@ -47,6 +48,21 @@ with input_col1:
         "Upload Absenteeism CSV",
         type="csv"
     )
+
+# Dataset download option
+    dataset_path = Path("data/Absenteeism_at_work.csv")
+    if dataset_path.exists():
+        with open(dataset_path, "rb") as f:
+            st.download_button(
+                label="Download Dataset (CSV)",
+                data=f,
+                file_name="Absenteeism_at_work.csv",
+                mime="text/csv"
+            )
+    else:
+        st.warning("Dataset file not found in data folder.")
+
+
 
 with input_col2:
     model_map = {
